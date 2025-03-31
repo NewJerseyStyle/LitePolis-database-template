@@ -8,7 +8,7 @@ DEFAULT_CONFIG = {
 }
 
 if "PYTEST_CURRENT_TEST" in os.environ:
-    database_url = get_config("database_url")
+    database_url = get_config("litepolis_database_template", "database_url")
 else:
     database_url = DEFAULT_CONFIG.get("database_url")
 engine = create_engine(database_url)
