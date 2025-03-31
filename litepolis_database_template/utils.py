@@ -7,7 +7,8 @@ DEFAULT_CONFIG = {
     "database_url": "sqlite:///database.db"
 }
 
-if "PYTEST_CURRENT_TEST" in os.environ:
+if ("PYTEST_CURRENT_TEST" not in os.environ and
+    "PYTEST_VERSION" not in os.environ):
     database_url = get_config("litepolis_database_template", "database_url")
 else:
     database_url = DEFAULT_CONFIG.get("database_url")
