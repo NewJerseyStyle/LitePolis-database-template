@@ -4,43 +4,6 @@ This repository provides a template for creating custom database modules for the
 
 The example code within this template uses SQLModel and SQLite for demonstration purposes, **replace this specific implementation** with your chosen database technology (e.g., PostgreSQL, MySQL, MongoDB, Redis, etc.) and corresponding drivers or ORMs/ODMs (e.g., SQLAlchemy, Psycopg2, PyMongo, Django ORM, etc.).
 
-## Core Concepts
-
-To adapt this template, you need to understand and modify the following key components:
-
-1.  **`DatabaseActor` (`litepolis_database_template/Actor.py`):**
-    *   **Important:** This class name `DatabaseActor` is the fixed entry point that LitePolis uses to interact with your database module.  **Do not rename this class.**
-    *   This is the central class where you will implement your database logic.
-    *   The template demonstrates a recommended pattern of using separate "Manager" classes for different data models/collections (e.g., `UserManager`, `ProductManager`) and having `DatabaseActor` inherit from them. This inheritance pattern is just a suggestion for code organization.
-    *   **Alternative Implementations:** You are also free to implement `DatabaseActor` in other ways, such as by having it contain instances of manager classes as attributes, or by directly implementing all database logic within `DatabaseActor` itself.
-    *   **Developer Manual is Key:** Regardless of the implementation approach you choose, it is crucial to provide clear documentation (e.g., in a developer manual or within the code itself) for downstream API developers. This documentation should explain how to interact with your `DatabaseActor` class and its methods to perform database operations.
-    *   Replace the example `UserManager` and `ConversationManager` inheritance (or any other example structure) with your chosen implementation, ensuring you maintain the `DatabaseActor` class name.
-
-2.  **Configuration (`litepolis_database_template/utils.py`):**
-    *   The `DEFAULT_CONFIG` dictionary provides default connection settings. You **must** update this with configuration keys relevant to your chosen database (e.g., connection string, host, port, username, password, database name).
-    *   The logic for retrieving the database configuration (checking `PYTEST_CURRENT_TEST` environment variable vs. defaults) should be adapted if your testing setup or configuration management differs.
-    *   The `get_config` function (imported from `litepolis`) is used to potentially override defaults in production.
-
-3.  **Database Connection & Session Management (`litepolis_database_template/utils.py`):**
-    *   The example functions (`connect_db`, `create_db_and_tables`, `with_session`, `get_session`) and the `engine` creation are specific to SQLModel/SQLAlchemy.
-    *   Replace this logic with the appropriate database technology and driver/ORM.
-
-4.  **Data Models (e.g., `litepolis_database_template/Users.py`, `litepolis_database_template/Conversations.py`):**
-    *   These files are **examples** demonstrating data models and manager classes using SQLModel.
-
-5.  **Package Metadata (`setup.py`):**
-    *   This file defines how your module is packaged. You **must** update:
-        *   `name`: A unique name for your package (e.g., `litepolis-database-mymongodb`) must in pattern `litepolis-database-*`.
-        *   `version`, `description`, `author`, `url`: Update with your details.
-        *   `install_requires`: **Crucially**, list all dependencies required by your module, including the database driver (e.g., `pymongo`, `psycopg2-binary`, `redis`), any ORM/ODM, and other libraries. Remove `sqlmodel` if you are not using it.
-
-6.  **Dependencies (`requirements.txt`):**
-    *   This file lists dependencies for development and testing.
-
-7.  **Testing (`tests/` folder):**
-    *   The provided tests are specific to the SQLModel/SQLite example.
-    *   Ensure your tests cover the methods implemented in your `DatabaseActor` and Manager classes.
-
 ## Key Files/Variables to Modify
 
 *   **Folder:** `litepolis_database_template/` (Rename this)
@@ -98,3 +61,57 @@ While changing the implementation, retain these structural concepts:
 *   Organizing database logic for different models into separate "Manager" classes (recommended).
 *   Comprehensive testing using `pytest` (or equivalent) in the `tests/` directory.
 *   Standard Python packaging via `setup.py`.
+
+## Core Concepts
+
+```mermaid
+graph LR
+    subgraph LitePolis
+        A[LitePolis Core]
+        Aa[LitePolis Modules]
+    end
+    subgraph Your Database Module
+        A --> B(DatabaseActor)
+        Aa --> B(DatabaseActor)
+        B --> C[UserManager]
+        B --> D[ConversationManager]
+    end
+    C --> G[Your Database]
+    D --> G
+```
+
+
+To adapt this template, you need to understand and modify the following key components:
+
+1.  **`DatabaseActor` (`litepolis_database_template/Actor.py`):**
+    *   **Important:** This class name `DatabaseActor` is the fixed entry point that LitePolis uses to interact with your database module.  **Do not rename this class.**
+    *   This is the central class where you will implement your database logic.
+    *   The template demonstrates a recommended pattern of using separate "Manager" classes for different data models/collections (e.g., `UserManager`, `ProductManager`) and having `DatabaseActor` inherit from them. This inheritance pattern is just a suggestion for code organization.
+    *   **Alternative Implementations:** You are also free to implement `DatabaseActor` in other ways, such as by having it contain instances of manager classes as attributes, or by directly implementing all database logic within `DatabaseActor` itself.
+    *   **Developer Manual is Key:** Regardless of the implementation approach you choose, it is crucial to provide clear documentation (e.g., in a developer manual or within the code itself) for downstream API developers. This documentation should explain how to interact with your `DatabaseActor` class and its methods to perform database operations.
+    *   Replace the example `UserManager` and `ConversationManager` inheritance (or any other example structure) with your chosen implementation, ensuring you maintain the `DatabaseActor` class name.
+
+2.  **Configuration (`litepolis_database_template/utils.py`):**
+    *   The `DEFAULT_CONFIG` dictionary provides default connection settings. You **must** update this with configuration keys relevant to your chosen database (e.g., connection string, host, port, username, password, database name).
+    *   The logic for retrieving the database configuration (checking `PYTEST_CURRENT_TEST` environment variable vs. defaults) should be adapted if your testing setup or configuration management differs.
+    *   The `get_config` function (imported from `litepolis`) is used to potentially override defaults in production.
+
+3.  **Database Connection & Session Management (`litepolis_database_template/utils.py`):**
+    *   The example functions (`connect_db`, `create_db_and_tables`, `with_session`, `get_session`) and the `engine` creation are specific to SQLModel/SQLAlchemy.
+    *   Replace this logic with the appropriate database technology and driver/ORM.
+
+4.  **Data Models (e.g., `litepolis_database_template/Users.py`, `litepolis_database_template/Conversations.py`):**
+    *   These files are **examples** demonstrating data models and manager classes using SQLModel.
+
+5.  **Package Metadata (`setup.py`):**
+    *   This file defines how your module is packaged. You **must** update:
+        *   `name`: A unique name for your package (e.g., `litepolis-database-mymongodb`) must in pattern `litepolis-database-*`.
+        *   `version`, `description`, `author`, `url`: Update with your details.
+        *   `install_requires`: **Crucially**, list all dependencies required by your module, including the database driver (e.g., `pymongo`, `psycopg2-binary`, `redis`), any ORM/ODM, and other libraries. Remove `sqlmodel` if you are not using it.
+
+6.  **Dependencies (`requirements.txt`):**
+    *   This file lists dependencies for development and testing.
+
+7.  **Testing (`tests/` folder):**
+    *   The provided tests are specific to the SQLModel/SQLite example.
+    *   Ensure your tests cover the methods implemented in your `DatabaseActor` and Manager classes.
