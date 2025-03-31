@@ -21,9 +21,5 @@ def create_db_and_tables():
     # so tables will only be created if they don't exist
     SQLModel.metadata.create_all(engine)
 
-def with_session():
-    with Session(engine) as session:
-        yield session
-
 def get_session():
     return Session(engine)

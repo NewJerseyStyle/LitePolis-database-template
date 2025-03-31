@@ -46,6 +46,7 @@ class ConversationManager:
         session = get_session()
         db_conversation = session.get(Conversation, conversation_id)
         if not db_conversation:
+            session.close()
             return None
 
         db_conversation.title = title
@@ -63,6 +64,7 @@ class ConversationManager:
         session = get_session()
         conversation = session.get(Conversation, conversation_id)
         if not conversation:
+            session.close()
             return False
 
         session.delete(conversation)
