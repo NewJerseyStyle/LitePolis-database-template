@@ -8,8 +8,8 @@ with open('LICENSE') as f:
     license = f.read()
 
 setup(
-    name='litepolis-database-template',                    # Change
-    version="v0.0.1",                                     # Change
+    name='litepolis-database-template',                   # Change
+    version="0.0.1",                                      # Change
     description='The database module for LitePolis',      # Change
     long_description=readme,
     long_description_content_type="text/markdown",
