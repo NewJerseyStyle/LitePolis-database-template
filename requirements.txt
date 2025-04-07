@@ -1,3 +1,0 @@
-litepolis
-pytest
-sqlmodel
